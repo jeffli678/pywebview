@@ -1,6 +1,7 @@
 ﻿namespace WebBrowserInterop {
     public interface IWebBrowserInterop
     {
-        object Invoke(string message, object param);
+        string call(string message, string param);
+        void alert(string message);
     }
 }

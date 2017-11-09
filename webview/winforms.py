@@ -48,7 +48,11 @@ class BrowserView:
                     func_params = param if param is None else json.loads(param)
                     return function(func_params)
                 except Exception as e:
-                    logger.exception('Error occured while evaluating function {0}'.format(func_name))
+                    logger.exception('Error occurred while evaluating function {0}'.format(func_name))
+
+        def alert(self, message):
+            if message:
+                WinForms.MessageBox.Show(message)
 
     class BrowserForm(WinForms.Form):
         def __init__(self, title, url, width, height, resizable, fullscreen, min_size,
@@ -142,10 +146,12 @@ class BrowserView:
             if self.first_load:
                 self.web_browser.Visible = True
                 self.first_load = False
-                print('hello')
 
-        def on_message(self, sender, args):
-            print('sender: {0}/nargs: {1}/ntest: {2}'.format(sender, args))
+            self._initialize_js()
+
+        def _initialize_js(self):
+            with open(os.path.join(base_dir, 'js', 'alert.js')) as f:
+                self.web_browser.Document.InvokeScript('eval', (f.read(),))
 
         def toggle_fullscreen(self):
             if not self.is_fullscreen:
